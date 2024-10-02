@@ -1,0 +1,50 @@
+<!-- views/carrito.ejs -->
+<%- contentFor('body') %>
+<h1 class="mb-4"><i class="fas fa-shopping-cart"></i> Tu Carrito</h1>
+<% if (carrito.length > 0) { %>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Casa</th>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% carrito.forEach(item => { %>
+                <tr>
+                    <td><%= item.casaNombre %></td>
+                    <td><%= item.productoNombre %></td>
+                    <td><%= item.cantidad %></td>
+                    <td>$<%= item.precio.toFixed(2) %></td>
+                    <td>$<%= (item.precio * item.cantidad).toFixed(2) %></td>
+                    <td>
+                        <form action="/carrito/eliminar" method="POST" class="d-inline">
+                            <input type="hidden" name="casaNombre" value="<%= item.casaNombre %>">
+                            <input type="hidden" name="productoNombre" value="<%= item.productoNombre %>">
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="4" class="text-right">Total:</th>
+                <th>$<%= carrito.reduce((total, item) => total + item.precio * item.cantidad, 0).toFixed(2) %></th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+    <form action="/carrito/limpiar" method="POST" class="mb-3">
+        <button type="submit" class="btn btn-warning"><i class="fas fa-broom"></i> Limpiar Carrito</button>
+    </form>
+<% } else { %>
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> El carrito está vacío
+    </div>
+<% } %>
+<a href="/" class="btn btn-primary"><i class="fas fa-home"></i> Volver a la lista de casas</a>
